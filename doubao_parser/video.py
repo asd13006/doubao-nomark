@@ -95,11 +95,12 @@ async def doubao_video_parse(url: str, return_raw: bool = False):
     except KeyError as e:
         raise KeyError(f"视频解析失败: {str(e)}")
 
+
 async def get_redirect_url(url: str):
     headers = {
-        'content-type': 'application/json',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/145.0.0.0 Safari/537.36',
+        "content-type": "application/json",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/145.0.0.0 Safari/537.36",
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(url, headers=headers, follow_redirects=True)
@@ -109,35 +110,34 @@ async def get_redirect_url(url: str):
 async def yunque_video_parse(url: str, return_raw: bool = False):
 
     headers = {
-        'content-type': 'application/json',
-        'origin': 'https://xiaoyunque.jianying.com',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/145.0.0.0 Safari/537.36',
+        "content-type": "application/json",
+        "origin": "https://xiaoyunque.jianying.com",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/145.0.0.0 Safari/537.36",
     }
 
     redirect_url = await get_redirect_url(url)
     query = urllib.parse.urlparse(redirect_url).query
     params_dict = urllib.parse.parse_qs(str(query))
-    share_id = params_dict['share_id'][0]
-    share_sec_did = params_dict['share_sec_did'][0]
-    share_sec_uid = params_dict['share_sec_uid'][0]
+    share_id = params_dict["share_id"][0]
+    share_sec_did = params_dict["share_sec_did"][0]
+    share_sec_uid = params_dict["share_sec_uid"][0]
 
     json_data = {
-        'query_params': {
-            'content_type': 'video',
-            'home_input_type': 'VIDEO_PART',
-            'scene': 'agent_tool',
-            'share_campaign_key': 'pippit_invite_fission',
-            'share_id': share_id,
-            'share_sec_did': share_sec_did,
-            'share_sec_uid': share_sec_uid,
+        "query_params": {
+            "content_type": "video",
+            "home_input_type": "VIDEO_PART",
+            "scene": "agent_tool",
+            "share_campaign_key": "pippit_invite_fission",
+            "share_id": share_id,
+            "share_sec_did": share_sec_did,
+            "share_sec_uid": share_sec_uid,
         },
     }
 
     async with httpx.AsyncClient() as client:
-
         response = await client.post(
-            'https://xiaoyunque.jianying.com/luckycat/cn/jianying/campaign/v1/pippit/share/landing_page',
+            "https://xiaoyunque.jianying.com/luckycat/cn/jianying/campaign/v1/pippit/share/landing_page",
             headers=headers,
             json=json_data,
         )
@@ -158,7 +158,7 @@ async def yunque_video_parse(url: str, return_raw: bool = False):
             "url": video_info["video_url"],
             "width": video_info["width"],
             "height": video_info["height"],
-            "definition": f'{video_info["width"]}p',
+            "definition": f"{video_info['width']}p",
             "poster_url": video_info["cover_url"],
         }
 
